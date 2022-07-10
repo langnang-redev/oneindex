@@ -27,6 +27,8 @@ route::group(function () {
   route::any('/admin/setpass', 'AdminController@setpass');
   route::any('/admin/images', 'AdminController@images');
 
+  route::any('/admin/crawler', 'CrawlerController@index');
+  route::any('/admin/download', 'DownloadController@index');
   route::any('/admin/upload', 'UploadController@index');
   //守护进程
   route::any('/admin/upload/run', 'UploadController@run');
@@ -94,3 +96,13 @@ route::group(function () {
 }, function () {
   route::any('{path:#all}', 'IndexController@index');
 });
+
+
+if (isset($_POST['start_task'])) {
+  $i = 0;
+  while ($i < 100) {
+    echo "<script>$('[name=collected_scan_urls]').text(" . $i . ")</script>";
+    sleep(1);
+    $i++;
+  }
+}
