@@ -38,25 +38,47 @@ ob_end_clean();
                 <td><?php echo $task['name']; ?></td>
                 <td><?php echo $slug; ?></td>
                 <td>
-                  <span name="collected_scan_urls" attr-name="<?php echo $slug; ?>">0</span>
-                  / 0
+                  <span name="collected_scan_urls" task-name="<?php echo $slug ?>"><?php echo $task['collected_scan_urls_num'] ?></span>
+                  /
+                  <span name="collect_scan_urls" task-name="<?php echo $slug ?>"><?php echo sizeof($task['collect_scan_urls']) ?></span>
                 </td>
-                <td>0 / 0</td>
-                <td>0 / 0</td>
-                <td>0 / 0</td>
-                <td></td>
                 <td>
-                  <button name="start_task" class="mdui-btn mdui-btn-icon mdui-color-light-blue mdui-ripple mdui-btn-dense" type="submit" value="<?php echo $slug ?>" title="启动">
+                  <span name="collected_list_urls" task-name="<?php echo $slug ?>"><?php echo $task['collected_list_urls_num'] ?></span>
+                  /
+                  <span name="collect_list_urls" task-name="<?php echo $slug ?>"><?php echo sizeof($task['collect_list_urls']) ?></span>
+                </td>
+                <td>
+                  <span name="collected_content_urls" task-name="<?php echo $slug ?>"><?php echo $task['collected_content_urls_num'] ?></span>
+                  /
+                  <span name="collect_content_urls" task-name="<?php echo $slug ?>"><?php echo sizeof($task['collect_content_urls']) ?></span>
+                </td>
+                <td>
+                  <span name="collected_content_fields" task-name="<?php echo $slug ?>"><?php echo $task['collected_content_fields_num'] ?></span>
+                </td>
+                <td>
+                  <?php if ($_POST['start_crawler_task'] == $slug) : ?>
+                    运行中
+                  <?php else : ?>
+                    停止
+                  <?php endif; ?>
+                </td>
+                <td>
+                  <button name="start_crawler_task" task-name="<?php echo $slug ?>" class="mdui-btn mdui-btn-icon mdui-color-light-blue mdui-ripple mdui-btn-dense" type="submit" value="<?php echo $slug ?>" title="启动">
                     <i class="mdui-icon material-icons">&#xe037;</i>
                   </button>
-                  <button name="stop_task" class="mdui-btn mdui-btn-icon mdui-color-light-blue mdui-ripple mdui-btn-dense" type="submit" value="<?php echo $slug ?>" title="停止">
-                    <i class="mdui-icon material-icons">&#xe047;</i>
-                  </button>
+                  <?php if ($_POST['start_crawler_task'] == $slug) : ?>
+                    <button name="stop_task" task-name="<?php echo $slug ?>" class="mdui-btn mdui-btn-icon mdui-color-light-blue mdui-ripple mdui-btn-dense" type="submit" value="<?php echo $slug ?>" title="停止">
+                      <i class="mdui-icon material-icons">&#xe047;</i>
+                    </button>
+                  <?php endif; ?>
                   <button name="edit_task" class="mdui-btn mdui-btn-icon mdui-color-amber mdui-ripple mdui-btn-dense" type="submit" value="<?php echo $slug ?>" title="编辑">
                     <i class="mdui-icon material-icons">&#xe3c9;</i>
                   </button>
-                  <button name="delete_task" class="mdui-btn mdui-btn-icon mdui-color-red mdui-ripple mdui-btn-dense" type="submit" value="<?php echo $slug ?>" title="删除">
+                  <button name="empty_task" class="mdui-btn mdui-btn-icon mdui-color-red mdui-ripple mdui-btn-dense" type="submit" value="<?php echo $slug ?>" title="清空">
                     <i class="mdui-icon material-icons">&#xe872;</i>
+                  </button>
+                  <button name="delete_task" class="mdui-btn mdui-btn-icon mdui-color-red mdui-ripple mdui-btn-dense" type="submit" value="<?php echo $slug ?>" title="删除">
+                    <i class="mdui-icon material-icons">&#xe5cd;</i>
                   </button>
                 </td>
               </tr>
@@ -64,6 +86,7 @@ ob_end_clean();
           </tbody>
         </table>
       </form>
+
     </div>
 
   <?php else : ?>
@@ -101,15 +124,21 @@ ob_end_clean();
         <small>定义内容页url的规则，内容页是指包含要爬取内容的网页</small>
       </div>
       <div class="mdui-textfield">
+        <h4>下载链接规则 <small>(一行一个)</small></h4>
+        <textarea class="mdui-textfield-input" placeholder="输入后回车换行" name="task_download_url_regexes"><?php echo implode("\n", $crawler['download_url_regexes']) ?></textarea>
+        <small>定义下载链接url的规则，该链接配合检索对应抽取数据</small>
+      </div>
+      <div class="mdui-textfield">
         <h4>内容页抽取规则 <small>参考: <a href="http://querylist.cc/docs/api/v4/Elements-introduce">Querylist\Dom\Elements</a></small></h4>
         <table class="mdui-table">
           <thead>
             <tr>
               <th>编码</th>
               <th>名称</th>
-              <th>页面元素</th>
-              <th></th>
+              <th>元素</th>
+              <th>方法</th>
               <th>属性</th>
+              <th>下载</th>
               <th>操作
                 <button class="mdui-btn mdui-btn-icon mdui-color-light-blue mdui-ripple mdui-float-right" name="add_field" value="1" title="新增">
                   <i class="mdui-icon material-icons" style="top: 33%;left: 33%;">&#xe145;</i>
@@ -148,6 +177,12 @@ ob_end_clean();
                   <div class="mdui-textfield" style="padding: 0;">
                     <input class="mdui-textfield-input" type="text" name="field_args_<? echo $index ?>" value="<?php echo $field['args']; ?>" />
                   </div>
+                </td>
+                <td>
+                  <label class="mdui-switch">
+                    <input type="checkbox" name="field_down_<? echo $index ?>" value="1" <?php echo !empty($field['down']) ? 'checked' : ''; ?> />
+                    <i class="mdui-switch-icon"></i>
+                  </label>
                 </td>
                 <td>
                   <button class="mdui-btn mdui-btn-icon mdui-color-red mdui-ripple mdui-float-right" name="delete_field" value="<?php echo $index ?>" title="删除">

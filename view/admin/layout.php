@@ -43,16 +43,14 @@
         <i class="mdui-list-item-icon mdui-icon material-icons">&#xe410;</i>
         <div class="mdui-list-item-content">图床设置(OneImages)</div>
       </a>
-      <?php if (in_array(PHP_SAPI, ['cli-server'])) : ?>
-        <a href="<?php echo $root ?>?/admin/crawler" class="mdui-list-item">
-          <i class="mdui-list-item-icon mdui-icon material-icons">&#xe868;</i>
-          <div class="mdui-list-item-content">爬虫管理</div>
-        </a>
-        <a href="<?php echo $root ?>?/admin/download" class="mdui-list-item">
-          <i class="mdui-list-item-icon mdui-icon material-icons">&#xe2c4;</i>
-          <div class="mdui-list-item-content">下载管理</div>
-        </a>
-      <?php endif; ?>
+      <a href="<?php echo $root ?>?/admin/crawler" class="mdui-list-item">
+        <i class="mdui-list-item-icon mdui-icon material-icons">&#xe868;</i>
+        <div class="mdui-list-item-content">爬虫管理</div>
+      </a>
+      <a href="<?php echo $root ?>?/admin/download" class="mdui-list-item">
+        <i class="mdui-list-item-icon mdui-icon material-icons">&#xe2c4;</i>
+        <div class="mdui-list-item-content">下载管理</div>
+      </a>
       <a href="<?php echo $root ?>?/admin/upload" class="mdui-list-item">
         <i class="mdui-list-item-icon mdui-icon material-icons">&#xe2c6;</i>
         <div class="mdui-list-item-content">上传管理</div>
